@@ -1,8 +1,8 @@
 -- Problem 1
 -- Find the last element of a list
 myLast :: [a] -> a
-myLast [] = error "No elements."
-myLast [x] = x
+myLast []     = error "No elements."
+myLast [x]    = x
 myLast (_:xs) = myLast xs
 
 
@@ -21,13 +21,13 @@ myButLast = last . init
 -- Problem 4
 -- Find the number of elements of a list.
 myLength :: [a] -> Int
-myLength [] = 0
+myLength []     = 0
 myLength (_:xs) = 1 + myLength xs
 
 -- Problem 5
 -- Reverse a list.
 myReverse :: [a] -> [a]
-myReverse [] = []
+myReverse []     = []
 myReverse (x:xs) = (myReverse xs) ++ [x]
 
 
@@ -35,23 +35,24 @@ myReverse (x:xs) = (myReverse xs) ++ [x]
 -- Find out whether a list is a palindrome. A palindrome can be read forward or
 -- backward; e.g. (x a m a x).
 isPalindrome :: Eq a => [a] -> Bool
-isPalindrome [x, y] = x == y
+isPalindrome [x, y]    = x == y
 isPalindrome [x, _, z] = x == z
-isPalindrome (x:xs) = x == last xs && isPalindrome (init xs)
+isPalindrome (x:xs)    = x == last xs && isPalindrome (init xs)
 
 
 -- Problem 8
 -- "aaaa" -> "a"
 myCompress :: Eq a => [a] -> [a]
-myCompress [] = []
+myCompress []     = []
 myCompress (x:xs) = x : (myCompress $ dropWhile (== x) xs)
-
 
 
 -- Problem 10
 myEncode :: Eq a => [a] -> [(Int, a)]
-myEncode [] = []
+myEncode []     = []
 myEncode (x:xs) = (myLength (takeWhile (== x) xs) + 1, x) : (myEncode $ dropWhile (== x) xs)
+
+
 data NestedList a = Elem a | List [NestedList a]
 
 -- ??
@@ -65,12 +66,12 @@ myFlatten (List []) = []
 -- Pack consecutive duplicates of list elements into sublists. If a list
 -- contains repeated elements they should be placed in separate sublists.
 myPack :: [Char] -> [String]
-myPack [] = []
+myPack []     = []
 myPack (x:xs) = [x : takeWhile (== x) xs] ++ myPack (dropWhile (== x) xs)
 
 
 encode :: Eq a => [a] -> [(Int, a)]
-encode [] = []
+encode []     = []
 encode (x:xs) = (count, x) : encode (dropWhile (== x) xs)
               where count = 1 + length (takeWhile (== x) xs)
 
@@ -80,7 +81,7 @@ data EncodingEntry a = Single a | Multiple Int a
 
 
 toTuple :: EncodingEntry a -> (Int, a)
-toTuple (Single a) = (1, a)
+toTuple (Single a)     = (1, a)
 toTuple (Multiple n a) = (n, a)
 
 
@@ -90,21 +91,22 @@ encodeElement n x = Multiple n x
 
 
 encodeModified :: Eq a => [a] -> [EncodingEntry a]
-encodeModified [] = []
+encodeModified []     = []
 encodeModified (x:xs) = (encodeElement count x): encodeModified (dropWhile (== x) xs)
                       where count = 1 + length (takeWhile (== x) xs)
 
 
 encodeDirect :: Eq a => [a] -> [EncodingEntry a]
-encodeDirect [] = []
+encodeDirect []     = []
 encodeDirect (x:xs) = encodeDirect' 1 x xs
-encodeDirect' n y [] = [encodeElement n y]
-encodeDirect' n y (x:xs) | y == x = encodeDirect' (n+1) y xs
+
+encodeDirect' n y []                 = [encodeElement n y]
+encodeDirect' n y (x:xs) | y == x    = encodeDirect' (n+1) y xs
                          | otherwise = encodeElement n y : (encodeDirect' 1 y xs)
 
 
 decodeModified :: Eq a => [EncodingEntry a] -> [a]
-decodeModified [] = []
+decodeModified []     = []
 decodeModified (x:xs) = (take count $ repeat $ snd $ toTuple x) ++ decodeModified xs
                       where count = fst $ toTuple x
 
@@ -121,5 +123,9 @@ repli (x:xs) n = replicate n x ++ (repli xs n)
 myDrop :: [a] -> Int -> [a]
 myDrop [] n = []
 myDrop xs n = myDrop' 1 xs n
-myDrop' count (x:xs) n | count == n = xs
-                       | otherwise  = x : myDrop' (count+1) xs n
+
+myDrop' _     []     _                    = []
+myDrop' count (x:xs) n | mod count n == 0 = rest
+                       | otherwise        = (x:rest)
+                       where rest = myDrop' (count+1) xs n
+
