@@ -129,3 +129,25 @@ myDrop' count (x:xs) n | mod count n == 0 = rest
                        | otherwise        = (x:rest)
                        where rest = myDrop' (count+1) xs n
 
+
+
+mySplit :: [a] -> Int -> ([a], [a])
+mySplit [] n = ([], [])
+mySplit xs n = mySplit' ([], xs) n 1
+
+mySplit' (left, []    ) _ _             = (left, [])
+mySplit' (left, (x:xs)) n p | p <= n    = mySplit' (left ++ [x], xs) n (p+1)
+                            | otherwise = (left, (x:xs))
+
+
+mySlice :: [a] -> Int -> Int -> [a]
+mySlice [] _     _    = []
+mySlice xs start stop = mySlice' xs start stop 1
+
+mySlice' []     _     _    _                               = []
+mySlice' (x:xs) start stop pos | pos < start || pos > stop = rest
+                               | otherwise                 = (x:rest)
+                               where rest = mySlice' xs start stop (pos+1)
+
+myRotate :: [a] -> Int -> [a]
+myRotate [] _  = []
